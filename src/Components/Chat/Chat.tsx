@@ -5,6 +5,7 @@ import {createConnection, destroyConnection, sendMessage, setClientName, typeMes
 import styles from '../../../src/Components/Chat/Chat.module.css'
 import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
+import Avatar from "@material-ui/core/Avatar/Avatar";
 
 
 export const Chat = () => {
@@ -20,7 +21,8 @@ export const Chat = () => {
     }, []);
 
     const [message, setMessage] = useState('');
-    const [name, setName] = useState('');
+    const [temporaryName, setTemporaryName] = useState('');
+    const [name, setName] = useState('anonymous');
     const [isAutoScrollActive, setIsAutoScrollActive] = useState(true);
     const [lastScrollTop, setLastScrollTop] = useState(0);
 
@@ -50,7 +52,9 @@ export const Chat = () => {
 
     const messageElements = messages.map((m: any) => {
         return <div key={m.id}>
-            <b>{m.user.name}:</b>
+            <Avatar>
+            </Avatar>
+            <b>{m.user.name}: </b>
             {m.message}
             <hr/>
         </div>
@@ -62,37 +66,65 @@ export const Chat = () => {
         </div>
     });
 
-    const typeMessageFunc = () => {
-        dispatch(typeMessage())
+    const typeMessageFunc = (target: any) => {
+        if (target.charCode === 13) {
+            dispatch(sendMessage(message));
+            setMessage('');
+            dispatch(typeMessage())
+        }
     };
+
+    const setClientNameOnClick = () => {
+        setName(temporaryName);
+        dispatch(setClientName(temporaryName));
+    };
+
+    const setClientNameOnKeyPress = (target: any) => {
+        if (target.charCode === 13) {
+            setClientNameOnClick();
+        }
+    };
+
 
     return (
 
         <div>
+            <h1 className={styles.header}>Welcome to chat {name}</h1>
             <div className={styles.nameField}>
-                <TextField id='outlined-basic' label='Enter your name' value={name}
-                           onChange={(e) => setName(e.currentTarget.value)}/>
+                <TextField id='outlined-basic'
+                           label='Enter your name'
+                           onChange={(e) => setTemporaryName(e.currentTarget.value)}
+                           onKeyPress={setClientNameOnKeyPress}/>
             </div>
             <div className={styles.nameButton}>
-                <Button size='small' variant='outlined' color='primary' onClick={() => {
-                    dispatch(setClientName(name))
-                }}>Set name
+                <Button size='medium'
+                        variant='outlined'
+                        color='primary'
+                        onClick={setClientNameOnClick}>
+                    Set name
                 </Button>
             </div>
-            <div className={styles.chatWindow} onScroll={scrollMessages}>
+            <div className={styles.chatWindow}
+                 onScroll={scrollMessages}>
                 {messageElements}
                 {typingUsersElement}
-                <div ref={messagesAnchorRef}>
+                <div
+                    ref={messagesAnchorRef}>
                 </div>
             </div>
             <div className={styles.messageField}>
-                <TextField id='outlined-basic' label='Enter your message...' value={message}
+                <TextField id='outlined-basic'
+                           label='Enter your message...'
+                           value={message}
                            onKeyPress={typeMessageFunc}
                            onChange={(e) => setMessage(e.currentTarget.value)}/>
             </div>
             <div className={styles.messageButton}>
-                <Button size='small' variant='outlined' color='primary' onClick={sendMessageFunc}>
-                    Send Message
+                <Button size='medium'
+                        variant='outlined'
+                        color='primary'
+                        onClick={sendMessageFunc}>
+                    Send message
                 </Button>
             </div>
         </div>
