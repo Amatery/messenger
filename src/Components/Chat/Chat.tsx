@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/store";
 import React, {useEffect, useRef, useState} from "react";
-import {createConnection, destroyConnection, sendMessage, setClientName, typeMessage} from "../../redux/chat-reducer";
+import {destroyConnection, sendMessage, typeMessage} from "../../redux/chat-reducer";
 import styles from '../../../src/Components/Chat/Chat.module.css'
 import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
@@ -13,16 +13,8 @@ export const Chat = () => {
     const typingUsers = useSelector((state: AppStateType) => state.chat.typingUsers);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(createConnection());
-        return () => {
-            dispatch(destroyConnection())
-        }
-    }, []);
 
     const [message, setMessage] = useState('');
-    const [temporaryName, setTemporaryName] = useState('');
-    const [name, setName] = useState('anonymous');
     const [isAutoScrollActive, setIsAutoScrollActive] = useState(true);
     const [lastScrollTop, setLastScrollTop] = useState(0);
 
@@ -32,12 +24,18 @@ export const Chat = () => {
         }
     }, [messages]);
 
+    useEffect(() => {
+        return () => {
+            dispatch(destroyConnection())
+        }
+    }, []);
+
     const messagesAnchorRef = useRef<HTMLDivElement>(null);
 
     const scrollMessages = (e: any) => {
         let element = e.currentTarget;
         const maxScrollPosition = element.scrollHeight - element.clientHeight;
-        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 10) {
+        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 100) {
             setIsAutoScrollActive(true)
         } else {
             setIsAutoScrollActive(false)
@@ -74,36 +72,10 @@ export const Chat = () => {
         }
     };
 
-    const setClientNameOnClick = () => {
-        setName(temporaryName);
-        dispatch(setClientName(temporaryName));
-    };
-
-    const setClientNameOnKeyPress = (target: any) => {
-        if (target.charCode === 13) {
-            setClientNameOnClick();
-        }
-    };
-
 
     return (
 
         <div>
-            <h1 className={styles.header}>Welcome to chat {name}</h1>
-            <div className={styles.nameField}>
-                <TextField id='outlined-basic'
-                           label='Enter your name'
-                           onChange={(e) => setTemporaryName(e.currentTarget.value)}
-                           onKeyPress={setClientNameOnKeyPress}/>
-            </div>
-            <div className={styles.nameButton}>
-                <Button size='medium'
-                        variant='outlined'
-                        color='primary'
-                        onClick={setClientNameOnClick}>
-                    Set name
-                </Button>
-            </div>
             <div className={styles.chatWindow}
                  onScroll={scrollMessages}>
                 {messageElements}

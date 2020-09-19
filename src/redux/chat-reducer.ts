@@ -1,3 +1,4 @@
+import { Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import {api} from '../api/api'
 import {AppStateType, InferActionTypes } from './store';
@@ -57,18 +58,18 @@ export const createConnection = () => (dispatch: any) => {
 };
 
 
-export const setClientName = (name: string): ThunkType => (dispatch: any) => {
+export const setClientName = (name: string): ThunkType => (dispatch: Dispatch) => {
     api.sendName(name);
 };
 
-export const typeMessage = (): ThunkType => (dispatch: any) => {
+export const typeMessage = (): ThunkType => (dispatch: Dispatch) => {
     api.typeMessage();
 };
-export const sendMessage = (messages: string): ThunkType => (dispatch: any) => {
+export const sendMessage = (messages: string): ThunkType => (dispatch: Dispatch) => {
     api.sendMessage(messages);
 };
 
-export const destroyConnection = (): ThunkType => (dispatch: any) => {
+export const destroyConnection = (): ThunkType => (dispatch: Dispatch) => {
     api.destroyConnection()
 };
 

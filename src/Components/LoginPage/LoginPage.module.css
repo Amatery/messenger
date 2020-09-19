@@ -1,0 +1,20 @@
+.nameField {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 10px;
+
+}
+
+.nameButton {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+
+.buttonText {
+    text-decoration: none !important;
+}

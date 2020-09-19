@@ -19,7 +19,10 @@ export const api = {
         this.socket = null
     },
     sendName(name: string) {
-        this.socket?.emit('client-name-sent', name)
+        this.socket?.emit('client-name-sent', name, (error: string | null) => {
+            console.log(error)
+            if (error) alert(error);
+        })
     },
     sendMessage(message: string) {
         this.socket?.emit('client-message-sent', message, (error: string | null) => {
