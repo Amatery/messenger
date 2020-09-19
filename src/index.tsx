@@ -5,17 +5,17 @@ import * as serviceWorker from './serviceWorker'
 import {Provider} from 'react-redux'
 import {store} from './redux/store'
 import {MessengerApp} from "./MessengerApp";
-import {BrowserRouter} from "react-router-dom";
+import {HashRouter} from "react-router-dom";
 
 
 ReactDOM.render(
-    <BrowserRouter>
+    <HashRouter>
         <React.StrictMode>
             <Provider store={store}>
                 <MessengerApp/>
             </Provider>
         </React.StrictMode>
-    </BrowserRouter>,
+    </HashRouter>,
     document.getElementById('root')
 );
 
