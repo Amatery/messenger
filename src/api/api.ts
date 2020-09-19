@@ -1,14 +1,16 @@
 import io from 'socket.io-client'
+import {MessageType, UserType} from "../Components/Chat/Chat";
 
 export const api = {
     socket: null as null | SocketIOClient.Socket,
 
     createConnection() {
-        this.socket = io('http://localhost:3009');
+        // this.socket = io('http://localhost:3009');
+        this.socket = io('https://sin-messenger.herokuapp.com/');
     },
-    subscribe(initMessagesHandler: (messages: string, fn: () => void) => void,
-              newMessageSentHandler: (message: string) => void,
-              userTypingHandler: (user: string) => void
+    subscribe(initMessagesHandler: (messages: Array<MessageType>, fn: () => void) => void,
+              newMessageSentHandler: (message: MessageType) => void,
+              userTypingHandler: (user: UserType) => void
     ) {
         this.socket?.on('init-messages-published', initMessagesHandler);
         this.socket?.on('new-message-sent', newMessageSentHandler);

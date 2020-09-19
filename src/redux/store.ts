@@ -7,8 +7,8 @@ let rootReducer = combineReducers({
     chat: chatReducer
 });
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
-export let store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+// let composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE___;
+export let store = createStore(rootReducer, applyMiddleware(thunk));
 
 //@ts-ignore
 window.store = store;

@@ -1,25 +1,27 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, KeyboardEvent} from "react";
 import styles from "../LoginPage/LoginPage.module.css";
 import TextField from "@material-ui/core/TextField/TextField";
 import Button from "@material-ui/core/Button/Button";
 import {createConnection, setClientName} from "../../redux/chat-reducer";
 import {useDispatch} from "react-redux";
-import {NavLink} from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
 
 type Props = {
     temporaryName: string,
     name: string
-    setName: any,
-    setTemporaryName: any
+    setName: (name: string) => void,
+    setTemporaryName: (name: string) => void
 }
 
 export const LoginPage = (props: Props) => {
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
-    const setClientNameOnKeyPress = (target: any) => {
-        if (target.charCode === 13) {
+    const setClientNameOnKeyPress = (target: KeyboardEvent<HTMLDivElement>) => {
+        if (target.key === 'Enter' && props.temporaryName.length > 0) {
             setClientNameOnClick();
+            history.push('/chat')
         }
     };
 
@@ -30,14 +32,11 @@ export const LoginPage = (props: Props) => {
 
     useEffect(() => {
         dispatch(createConnection());
-        return () => {
-
-        }
     }, []);
 
     return (
         <div>
-            <h1 className={styles.header}>Welcome to chat {props.name}</h1>
+            <h1 className={styles.header}>Welcome to chat</h1>
             <div className={styles.nameField}>
                 <TextField id='outlined-basic'
                            label='Enter your name'

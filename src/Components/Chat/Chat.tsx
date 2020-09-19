@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/store";
-import React, {useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from "react";
 import {destroyConnection, sendMessage, typeMessage} from "../../redux/chat-reducer";
 import styles from '../../../src/Components/Chat/Chat.module.css'
 import Button from "@material-ui/core/Button/Button";
@@ -11,6 +11,18 @@ import {Redirect} from "react-router-dom";
 type Props = {
     name: string
 }
+
+export type MessageType = {
+    message: string,
+    id: number
+    user: UserType
+}
+
+export type UserType = {
+    id: string,
+    name: string
+}
+
 
 export const Chat = (props: Props) => {
     const messages = useSelector((state: AppStateType) => state.chat.messages);
@@ -26,7 +38,7 @@ export const Chat = (props: Props) => {
         if (isAutoScrollActive) {
             messagesAnchorRef.current?.scrollIntoView({behavior: 'smooth'})
         }
-    }, [messages]);
+    }, [messages, typingUsers]);
 
     useEffect(() => {
         return () => {
@@ -36,10 +48,10 @@ export const Chat = (props: Props) => {
 
     const messagesAnchorRef = useRef<HTMLDivElement>(null);
 
-    const scrollMessages = (e: any) => {
+    const scrollMessages = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
         let element = e.currentTarget;
         const maxScrollPosition = element.scrollHeight - element.clientHeight;
-        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 10) {
+        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 2) {
             setIsAutoScrollActive(true)
         } else {
             setIsAutoScrollActive(false)
@@ -52,7 +64,7 @@ export const Chat = (props: Props) => {
         setMessage('')
     };
 
-    const messageElements = messages.map((m: any) => {
+    const messageElements = messages.map((m: MessageType) => {
         return <div key={m.id}>
             <Avatar>
             </Avatar>
@@ -62,18 +74,23 @@ export const Chat = (props: Props) => {
         </div>
     });
 
-    const typingUsersElement = typingUsers.map((m: any) => {
+    const typingUsersElement = typingUsers.map((m: UserType) => {
         return <div key={m.id}>
             <b>{m.name}:</b> ...
         </div>
     });
 
-    const typeMessageFunc = (target: any) => {
-        if (target.charCode === 13) {
+    const typeMessageFunc = (target: KeyboardEvent<HTMLDivElement>) => {
+        if (target.key === 'Enter') {
             dispatch(sendMessage(message));
             setMessage('');
-            dispatch(typeMessage())
+
         }
+    };
+
+    const onChangeTyping = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setMessage(e.currentTarget.value);
+        dispatch(typeMessage())
     };
 
 
@@ -97,7 +114,7 @@ export const Chat = (props: Props) => {
                            label='Enter your message...'
                            value={message}
                            onKeyPress={typeMessageFunc}
-                           onChange={(e) => setMessage(e.currentTarget.value)}/>
+                           onChange={onChangeTyping}/>
             </div>
             <div className={styles.messageButton}>
                 <Button size='medium'
