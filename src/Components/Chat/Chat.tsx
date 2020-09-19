@@ -6,9 +6,13 @@ import styles from '../../../src/Components/Chat/Chat.module.css'
 import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
 import Avatar from "@material-ui/core/Avatar/Avatar";
+import {Redirect} from "react-router-dom";
 
+type Props = {
+    name: string
+}
 
-export const Chat = () => {
+export const Chat = (props: Props) => {
     const messages = useSelector((state: AppStateType) => state.chat.messages);
     const typingUsers = useSelector((state: AppStateType) => state.chat.typingUsers);
     const dispatch = useDispatch();
@@ -35,7 +39,7 @@ export const Chat = () => {
     const scrollMessages = (e: any) => {
         let element = e.currentTarget;
         const maxScrollPosition = element.scrollHeight - element.clientHeight;
-        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 100) {
+        if (element.scrollTop > lastScrollTop && Math.abs(maxScrollPosition - element.scrollTop) < 10) {
             setIsAutoScrollActive(true)
         } else {
             setIsAutoScrollActive(false)
@@ -72,6 +76,10 @@ export const Chat = () => {
         }
     };
 
+
+    if (props.name === 'anonymous') {
+        return <Redirect to={`/login`}/>
+    }
 
     return (
 

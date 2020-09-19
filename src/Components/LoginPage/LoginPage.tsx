@@ -6,13 +6,16 @@ import {createConnection, setClientName} from "../../redux/chat-reducer";
 import {useDispatch} from "react-redux";
 import {NavLink} from "react-router-dom";
 
+type Props = {
+    temporaryName: string,
+    name: string
+    setName: any,
+    setTemporaryName: any
+}
 
-export const LoginPage = () => {
+export const LoginPage = (props: Props) => {
 
     const dispatch = useDispatch();
-
-    const [temporaryName, setTemporaryName] = useState('');
-    const [name, setName] = useState('anonymous');
 
     const setClientNameOnKeyPress = (target: any) => {
         if (target.charCode === 13) {
@@ -21,8 +24,8 @@ export const LoginPage = () => {
     };
 
     const setClientNameOnClick = () => {
-        setName(temporaryName);
-        dispatch(setClientName(temporaryName));
+        props.setName(props.temporaryName);
+        dispatch(setClientName(props.temporaryName));
     };
 
     useEffect(() => {
@@ -34,20 +37,20 @@ export const LoginPage = () => {
 
     return (
         <div>
-            <h1 className={styles.header}>Welcome to chat {name}</h1>
+            <h1 className={styles.header}>Welcome to chat {props.name}</h1>
             <div className={styles.nameField}>
                 <TextField id='outlined-basic'
                            label='Enter your name'
-                           onChange={(e) => setTemporaryName(e.currentTarget.value)}
+                           onChange={(e) => props.setTemporaryName(e.currentTarget.value)}
                            onKeyPress={setClientNameOnKeyPress}/>
             </div>
             <div className={styles.nameButton}>
-                <NavLink className={styles.buttonText} to={temporaryName.length < 1 ? '/login' : '/chat'}>
+                <NavLink className={styles.buttonText} to={props.temporaryName.length < 1 ? '/login' : '/chat'}>
                     <Button className={styles.buttonText}
                             size='medium'
                             variant='outlined'
                             color='primary'
-                            disabled={temporaryName.length < 1}
+                            disabled={props.temporaryName.length < 1}
                             onClick={setClientNameOnClick}>
                         Enter to chat
                     </Button>

@@ -6,9 +6,9 @@ export const api = {
     createConnection() {
         this.socket = io('http://localhost:3009');
     },
-    subscribe(initMessagesHandler: (messages: any, fn: () => void) => void,
-              newMessageSentHandler: (message: any) => void,
-              userTypingHandler: (user: any) => void
+    subscribe(initMessagesHandler: (messages: string, fn: () => void) => void,
+              newMessageSentHandler: (message: string) => void,
+              userTypingHandler: (user: string) => void
     ) {
         this.socket?.on('init-messages-published', initMessagesHandler);
         this.socket?.on('new-message-sent', newMessageSentHandler);
@@ -20,7 +20,7 @@ export const api = {
     },
     sendName(name: string) {
         this.socket?.emit('client-name-sent', name, (error: string | null) => {
-            console.log(error)
+            console.log(error);
             if (error) alert(error);
         })
     },
