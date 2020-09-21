@@ -11,20 +11,20 @@ const initialState = {
 
 export const chatReducer = (state: InitialStateType = initialState, action: ActionTypes): InitialStateType => {
     switch (action.type) {
-        case 'messages-received': {
+        case 'chat/messages-received': {
             return {...state, messages: action.messages}
         }
-        case 'new-message-received': {
+        case 'chat/new-message-received': {
             return {
                 ...state,
                 messages: [...state.messages, action.message],
                 typingUsers: state.typingUsers.filter(u => u.id !== action.message.user.id)
             }
         }
-        case 'typingUserAdded': {
+        case 'chat/typingUserAdded': {
             return {...state, typingUsers: [...state.typingUsers.filter(u => u.id !== action.user.id), action.user]}
         }
-        case 'typingUserDeleted' : {
+        case 'chat/typingUserDeleted' : {
             return {
                 ...state,
                 typingUsers: state.typingUsers.filter(u => u.id !== action.user.id)
@@ -38,19 +38,19 @@ export const chatReducer = (state: InitialStateType = initialState, action: Acti
 
 const action = {
     messagesReceived: (messages: Array<MessageType>) => ({
-        type: 'messages-received',
+        type: 'chat/messages-received',
         messages
     } as const),
     newMessageReceived: (message: MessageType) => ({
-        type: 'new-message-received',
+        type: 'chat/new-message-received',
         message
     } as const),
     typingUserAdded: (user: UserType) => ({
-        type: 'typingUserAdded',
+        type: 'chat/typingUserAdded',
         user
     } as const),
     typingUserDelete: (user: UserType) => ({
-        type: 'typingUserDeleted',
+        type: 'chat/typingUserDeleted',
         user
     } as const)
 };
