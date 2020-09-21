@@ -66,10 +66,14 @@ export const Chat = (props: Props) => {
 
     const messageElements = messages.map((m: MessageType) => {
         return <div key={m.id}>
-            <Avatar>
-            </Avatar>
-            <b>{m.user.name}: </b>
-            {m.message}
+            <div className={styles.chatName}>
+                <Avatar className={styles.chatAvatar}>
+                </Avatar>
+                <div>
+                    <b>{m.user.name}: </b>
+                    {m.message}
+                </div>
+            </div>
             <hr/>
         </div>
     });
@@ -93,13 +97,11 @@ export const Chat = (props: Props) => {
         dispatch(typeMessage())
     };
 
-
     if (props.name === 'anonymous') {
         return <Redirect to={`/login`}/>
     }
 
     return (
-
         <div>
             <div className={styles.chatWindow}
                  onScroll={scrollMessages}>
